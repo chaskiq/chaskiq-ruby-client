@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "chaskiqRubyClient/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "chaskiqRubyClient"
+  spec.name          = "chaskiq-client"
   spec.version       = ChaskiqRubyClient::VERSION
   spec.authors       = ["michelson"]
   spec.email         = ["miguelmichelson@gmail.com"]

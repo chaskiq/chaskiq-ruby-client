@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    chaskiqRubyClient (0.1.0)
+    chaskiq-client (0.1.0)
       activesupport
       faraday
       gqli
@@ -96,7 +96,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.16)
-  chaskiqRubyClient!
+  chaskiq-client!
   pry
   rake (~> 10.0)
   rb-readline
