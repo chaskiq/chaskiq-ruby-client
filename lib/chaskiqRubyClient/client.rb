@@ -5,15 +5,14 @@ require "graphql/client/http"
 module ChaskiqRubyClient
   class Client
 
-    attr_accessor :client, :schema, :token
+    attr_accessor :size, :client, :schema, :token
 
-    def initialize(token)
+    def initialize(site, token)
       
       self.token = token
 
       # Configure GraphQL endpoint using the basic HTTP network adapter.
-      http = GraphQL::Client::HTTP.new(
-        "http://localhost:3000/graphql") do
+      http = GraphQL::Client::HTTP.new(site) do
         def headers(context)
           # Optionally set any HTTP headers
           #{ "User-Agent": "My Client" }
@@ -22,7 +21,13 @@ module ChaskiqRubyClient
       end  
     
       # Fetch latest schema on init, this will make a network request
-      @schema = GraphQL::Client.load_schema(http)
+      @schema = GraphQL::Client.load_schema( 
+        GraphQL::Client.dump_schema(
+          http, 
+          nil, 
+          context: { token: token }
+        ) 
+      )
     
       # However, it's smart to dump this to a JSON file and load from disk
       #
@@ -37,7 +42,6 @@ module ChaskiqRubyClient
       )
     end
 
-
     def query(type, variables={})
       self.client.query( type, {
         context: {
@@ -46,10 +50,5 @@ module ChaskiqRubyClient
         variables: variables
       })
     end
-
-
-
-
-
   end
 end

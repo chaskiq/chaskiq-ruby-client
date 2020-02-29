@@ -1,5 +1,6 @@
 
 require "spec_helper"
+require "oauth2"
 
 module ChaskiqRubyClient
 
@@ -7,16 +8,32 @@ module ChaskiqRubyClient
 
     let(:client){  ChaskiqRubyClient::Client }
     let(:token) {
-      "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3MzZlMGVkOS05NjBmLTQxMmEtYThhMC1lYjI3YTEwMTdmOWQiLCJzdWIiOiIxIiwic2NwIjoiYWdlbnQiLCJhdWQiOm51bGwsImlhdCI6MTU3NzE5NzczOSwiZXhwIjoxNTc3Mjg0MTM5fQ.2zF_4jNENl1cP1Zk9t_fjycnxOUdjI5FJgf19rNv08o"
+      "LbB8IVh6DvSj7m5xJ93VfQcyxE954I5KxqrKg2m4BVg"
     }
 
     subject{
-      client.new(token)
+      client.new("http://localhost:3000/graphql", token)
     }
 
-    it "will setup & query" do
+
+    it "token" do
+      uid = "h9CgouFY427ylil9EK2iLolKQZMeZVi96pTv0Q7dNhE"
+      secret = "E2X7QNN2sob5xZdjQ48ukn688b5nskUHi5vgEuAetew"
+      site = "http://app.chaskiq.test:3000"
+
+      client = OAuth2::Client.new(uid, secret, site: site)
+
       
-      subject = client.new(token)
+      access_token =  client.password.get_token(
+        "admin@test.com", 
+        "123456"
+      )
+
+      puts access_token.token
+      expect(access_token.token).to_not be_nil
+    end
+
+    it "will setup & query" do
       
       Apps = subject.client.parse <<-'GRAPHQL'
         query {
@@ -27,7 +44,6 @@ module ChaskiqRubyClient
       GRAPHQL
 
       result = subject.query(Apps)
-
       expect(result.data.apps.size).to be > 0
     end
 
@@ -48,7 +64,7 @@ module ChaskiqRubyClient
 
       result = subject.query(InviteAgent, {
         email: "foo@bar.com",
-        appKey: "GPi9haWV1ocbr4My_Q8xPw",
+        appKey: "3v1y3UejFtX1itkssgdi-A",
       })
 
       expect(result.data.invite_agent.agent.email).to be == "foo@bar.com"
