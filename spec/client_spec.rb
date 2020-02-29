@@ -15,24 +15,6 @@ module ChaskiqRubyClient
       client.new("http://localhost:3000/graphql", token)
     }
 
-
-    it "token" do
-      uid = "h9CgouFY427ylil9EK2iLolKQZMeZVi96pTv0Q7dNhE"
-      secret = "E2X7QNN2sob5xZdjQ48ukn688b5nskUHi5vgEuAetew"
-      site = "http://app.chaskiq.test:3000"
-
-      client = OAuth2::Client.new(uid, secret, site: site)
-
-      
-      access_token =  client.password.get_token(
-        "admin@test.com", 
-        "123456"
-      )
-
-      puts access_token.token
-      expect(access_token.token).to_not be_nil
-    end
-
     it "will setup & query" do
       
       Apps = subject.client.parse <<-'GRAPHQL'
