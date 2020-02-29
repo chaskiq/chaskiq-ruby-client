@@ -17,13 +17,15 @@ module ChaskiqRubyClient
     }
     
     it "auth code token" do
-      uid, secret, site = credentials.values
-      auth_client = auth.new(uid:uid, secret: secret, site: site)
-      token = auth_client.get_token(
-        "admin@test.com", 
-        "123456"
-      )
-      expect(token).to_not be_nil
+      VCR.use_cassette("auth_code") do
+        uid, secret, site = credentials.values
+        auth_client = auth.new(uid:uid, secret: secret, site: site)
+        token = auth_client.get_token(
+          "admin@test.com", 
+          "123456"
+        )
+        expect(token).to_not be_nil
+      end
     end
 
     it "redirect uri" do

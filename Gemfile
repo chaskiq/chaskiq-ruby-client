@@ -11,3 +11,7 @@ gem "rspec-expectations"
 gem "rspec-mocks"
 gem "pry"
 gem 'rb-readline'
+
+
+gem "vcr"
+gem "webmock"

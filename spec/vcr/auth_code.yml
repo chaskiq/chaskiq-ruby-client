@@ -1,0 +1,56 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://app.chaskiq.test:3000/oauth/token
+    body:
+      encoding: UTF-8
+      string: client_id=h9CgouFY427ylil9EK2iLolKQZMeZVi96pTv0Q7dNhE&client_secret=E2X7QNN2sob5xZdjQ48ukn688b5nskUHi5vgEuAetew&grant_type=password&password=123456&username=admin%40test.com
+    headers:
+      User-Agent:
+      - Faraday v1.0.0
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Cache-Control:
+      - private, no-store
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"2e404cd088e36f5fdf314febee5dadac"
+      X-Request-Id:
+      - e4883076-b1bc-4de3-a1e1-0f05e89e7897
+      X-Runtime:
+      - '0.204988'
+      Vary:
+      - Origin
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"access_token":"MKoaskG5r1VjRhSZBpBlUlBDR-HTaAtLc6kaVtZrt0w","token_type":"Bearer","expires_in":7200,"refresh_token":"s5BMNMGPOB1FpkB7pxIp06b43ny0-p21srk-l5muI3g","scope":"read","created_at":1582951789}'
+    http_version: null
+  recorded_at: Sat, 29 Feb 2020 04:49:49 GMT
+recorded_with: VCR 5.1.0
