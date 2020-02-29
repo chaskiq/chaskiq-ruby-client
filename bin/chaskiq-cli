@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require "thor"
+require "bundler/setup"
+require "chaskiqRubyClient"
+require "chaskiqRubyClient/cli"
+
+ChaskiqRubyClient::Cli.start(ARGV)

@@ -1,3 +1,5 @@
+require "oauth2"
+
 module ChaskiqRubyClient
 
   class Auth

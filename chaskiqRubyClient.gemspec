@@ -35,9 +35,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday"
   spec.add_dependency "jwe"
   spec.add_dependency "activesupport"
-  spec.add_dependency "gqli"
-  spec.add_dependency "graphql-client"
   spec.add_dependency "oauth2"
+  spec.add_dependency "thor"
+  spec.add_dependency "graphlient", "0.3.5"
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"

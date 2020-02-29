@@ -15,26 +15,27 @@ module ChaskiqRubyClient
       client.new("http://localhost:3000/graphql", token)
     }
 
+    
+
     it "will setup & query" do
-      
       VCR.use_cassette("query_apps_collection") do
-        Apps = subject.client.parse <<-'GRAPHQL'
+        q = <<-'GRAPHQL'
           query {
             apps {
               name
             }
           }
         GRAPHQL
-
-        result = subject.query(Apps)
-        expect(result.data.apps.size).to be > 0
+        #q = subject.client.query{ query{ apps{ name } } }
+        result = subject.query(q)
+        expect(result.data.apps).to be_any
       end
     end
 
 
     it "mutation" do
       VCR.use_cassette("mutation_invite_agent") do
-        InviteAgent = subject.client.parse <<-'GRAPHQL'
+        q = <<-'GRAPHQL'
           mutation($appKey: String!, $email: String!){
             inviteAgent(appKey: $appKey, email: $email){
               agent {
@@ -46,7 +47,7 @@ module ChaskiqRubyClient
           }
         GRAPHQL
 
-        result = subject.query(InviteAgent, {
+        result = subject.query(q, {
           email: "foo@bar.com",
           appKey: "3v1y3UejFtX1itkssgdi-A",
         })
