@@ -1,8 +1,7 @@
 # ChaskiqRubyClient
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/chaskiqRubyClient`. To experiment with that code, run `bin/console` for an interactive prompt.
 
-TODO: Delete this and the text above, and describe your gem
+The chaskiq client allows you to interact with the Chaqkiq Graphql api,this library allows you to connect to any chaskiq instance.
 
 ## Installation
 
@@ -22,7 +21,40 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+
+This library is based on graphlient so the same api is compatible to interface the chaskiq api
+
+
+```ruby
+require "chaskiq-client"
+
+token = "YOUR_CHASKIQ_ACCESS_TOKEN"
+client.new("http://YOUR_CHASKIQ_INSTANCE/graphql", token)
+
+#compose query
+
+q = <<-'GRAPHQL'
+    mutation($appKey: String!, $email: String!){
+    inviteAgent(appKey: $appKey, email: $email){
+        agent {
+        email
+        avatarUrl
+        name
+        }
+    }
+    }
+GRAPHQL
+
+result = client.query(q, {
+    email: "foo@bar.com",
+    appKey: "3v1y3UejFtX1itkssgdi-A",
+})
+
+# get results
+result.data.invite_agent.agent.email
+
+```
+
 
 ## Development
 

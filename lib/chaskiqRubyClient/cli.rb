@@ -1,3 +1,4 @@
+require "pry"
 module ChaskiqRubyClient
 
   class Cli < Thor
@@ -35,7 +36,7 @@ module ChaskiqRubyClient
     desc "apps", "apps list"
     def apps
       token = "LbB8IVh6DvSj7m5xJ93VfQcyxE954I5KxqrKg2m4BVg"
-      subject = ChaskiqRubyClient::Client.new("http://localhost:3000/graphql", token)
+      subject = ChaskiqRubyClient::Client.new("http://app.chaskiq.test:3000/graphql", token)
       q = <<-'GRAPHQL'
         query {
           apps {
@@ -50,6 +51,143 @@ module ChaskiqRubyClient
 
       puts result.data.to_h
     end
+
+
+    desc "campaign", "apps list"
+    method_option :auth_token, :aliases => "-t", :desc => "token"
+    method_option :app_key, :aliases => "-k", :desc => "app key"
+    method_option :id, :aliases => "-i", :desc => "client secret"
+    method_option :page, :aliases => "-p", :desc => "page"
+    def campaign
+
+      token = options[:auth_token] || ask("enter auth_token:") #"Tro6BMCnPJ7yxedLJ8EgaVAMrFBWK1yXg01tacbCKWE"
+      key   = options[:app_key] || ask("enter app_key:")
+      id    = options[:id] || ask("enter id:")
+      page  = options[:page] || ask("enter page:")
+
+      subject = ChaskiqRubyClient::Client.new(
+        "https://app.chaskiq.io/graphql", 
+        token
+      )
+
+      result = subject.client.query{ 
+        query {
+          app(key: key ) {
+            botTask(id: id.to_s ){
+              id
+              counts
+              statsFields
+              metrics(page: page.to_i, per: 100){
+                collection {
+                  action
+                  host
+                  data
+                  messageId
+                  email
+                  appUserId
+                  updatedAt
+                  createdAt
+                }
+                meta
+              }
+            }
+          }
+        }
+      }
+
+      puts result.data.to_h.to_json
+    end
+
+
+    desc "conversation", "conversation"
+    method_option :auth_token, :aliases => "-t", :desc => "token"
+    method_option :app_key, :aliases => "-k", :desc => "app key"
+    method_option :id, :aliases => "-i", :desc => "client secret"
+    method_option :page, :aliases => "-p", :desc => "page"
+    def conversation
+
+      token = options[:auth_token] || ask("enter auth_token:") #"Tro6BMCnPJ7yxedLJ8EgaVAMrFBWK1yXg01tacbCKWE"
+      key   = options[:app_key] || ask("enter app_key:")
+      id    = options[:id] || ask("enter id:")
+      page  = options[:page] || ask("enter page:")
+
+      subject = ChaskiqRubyClient::Client.new(
+        "https://app.chaskiq.io/graphql", 
+        token
+      )
+
+      result = subject.client.query{
+        query{
+          app(key: key) {
+            encryptionKey
+            key
+            name
+            conversation(id: id.to_s){
+              id
+              key
+              state
+              readAt
+              priority
+              assignee {
+                id
+                email
+                avatarUrl
+              }
+              mainParticipant{
+                id
+                email
+                avatarUrl
+                properties
+                displayName
+              }
+              
+              messages(page: page.to_i){
+                collection{
+                  id
+                  stepId
+                  triggerId
+                  fromBot
+                  message{
+                    blocks
+                    data
+                    state
+                    htmlContent
+                    textContent
+                    serializedContent
+                    action
+                  }
+                  source
+                  readAt
+                  createdAt
+                  privateNote
+                  appUser{
+                    id
+                    email
+                    avatarUrl
+                    kind
+                    displayName
+                  }
+                  source
+                  messageSource {
+                    name
+                    state
+                    fromName
+                    fromEmail
+                    serializedContent
+                  }
+                  emailMessageId
+                }
+                meta
+              }
+            }
+          }
+        }
+      }
+
+      puts result.data.to_h.to_json
+    end
+
+    
 
 
   end
