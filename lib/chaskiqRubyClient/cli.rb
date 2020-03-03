@@ -3,21 +3,48 @@ module ChaskiqRubyClient
 
   class Cli < Thor
 
-    no_tasks {}
+    no_tasks {
+
+      def get_campaign(token, key, id, page)
+
+        subject = ChaskiqRubyClient::Client.new(
+          "https://app.chaskiq.io/graphql", 
+          token
+        )
+
+        collection = []
+
+        result = subject.client.query{ 
+          query {
+            app(key: key ) {
+              botTask(id: id.to_s ){
+                metrics(page: page.to_i, per: 5000){
+                  collection {
+                    action
+                    host
+                    data
+                    messageId
+                    email
+                    appUserId
+                    updatedAt
+                    createdAt
+                  }
+                  meta
+                }
+              }
+            }
+          }
+        }
+
+        collection = result.data.app.bot_task.metrics.collection 
+      end
+    }
 
     desc "hello NAME", "say hello to NAME"
     def hello(name, from=nil)
       puts "from: #{from}" if from
       puts "Hello #{name}"
     end
-
-    #{
-    #  uid: "h9CgouFY427ylil9EK2iLolKQZMeZVi96pTv0Q7dNhE",
-    #  secret: "E2X7QNN2sob5xZdjQ48ukn688b5nskUHi5vgEuAetew",
-    #  site: "http://app.chaskiq.test:3000"
-    #}
-
-    ## bundle exec ./bin/chaskiq auth_url --uid=h9CgouFY427ylil9EK2iLolKQZMeZVi96pTv0Q7dNhE --secret=E2X7QNN2sob5xZdjQ48ukn688b5nskUHi5vgEuAetew --site=http://app.chaskiq.test:3000
 
     desc "auth_url CODE", "code auth"
     method_option :uid, :aliases => "-u", :desc => "client id"
@@ -52,7 +79,6 @@ module ChaskiqRubyClient
       puts result.data.to_h
     end
 
-
     desc "campaign", "apps list"
     method_option :auth_token, :aliases => "-t", :desc => "token"
     method_option :app_key, :aliases => "-k", :desc => "app key"
@@ -62,40 +88,24 @@ module ChaskiqRubyClient
 
       token = options[:auth_token] || ask("enter auth_token:") #"Tro6BMCnPJ7yxedLJ8EgaVAMrFBWK1yXg01tacbCKWE"
       key   = options[:app_key] || ask("enter app_key:")
-      id    = options[:id] || ask("enter id:")
+      id    = options[:id] || ask("enter id:") 
       page  = options[:page] || ask("enter page:")
 
-      subject = ChaskiqRubyClient::Client.new(
-        "https://app.chaskiq.io/graphql", 
-        token
-      )
+      result = get_campaign(token, key, id, page)
 
-      result = subject.client.query{ 
-        query {
-          app(key: key ) {
-            botTask(id: id.to_s ){
-              id
-              counts
-              statsFields
-              metrics(page: page.to_i, per: 100){
-                collection {
-                  action
-                  host
-                  data
-                  messageId
-                  email
-                  appUserId
-                  updatedAt
-                  createdAt
-                }
-                meta
-              }
-            }
-          }
-        }
-      }
+      all_emails = []
+      emails = []
 
-      puts result.data.to_h.to_json
+      result.each do |o|
+        emails << o.email if o.action.include?("action")
+        all_emails << o.email
+      end
+
+      all_emails.uniq!
+
+      result = all_emails - emails
+
+      puts result
     end
 
 
@@ -186,9 +196,6 @@ module ChaskiqRubyClient
 
       puts result.data.to_h.to_json
     end
-
-    
-
 
   end
 
